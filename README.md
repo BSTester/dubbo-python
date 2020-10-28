@@ -6,7 +6,7 @@ _Python Dubbo Client._
 ## Installation
 
     python setup.py install
-    pip install python-dubbo-support-python3
+    pip install dubbo-python
 
 ## Usage
 
