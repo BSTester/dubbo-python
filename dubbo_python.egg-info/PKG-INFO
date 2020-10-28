@@ -1,0 +1,15 @@
+Metadata-Version: 1.1
+Name: dubbo-python
+Version: 0.0.1
+Summary: Python Dubbo Client. support zk and nacos
+Home-page: https://github.com/BSTester/dubbo-python
+Author: BSTester
+Author-email: forpeng@foxmail.com
+License: Apache License 2.0
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: Natural Language :: Chinese (Simplified)
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3.7

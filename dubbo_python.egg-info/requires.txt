@@ -1,0 +1,2 @@
+kazoo==2.6.0
+nacos-sdk-python

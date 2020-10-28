@@ -1,0 +1,15 @@
+Metadata-Version: 1.1
+Name: python-dubbo-support-python3
+Version: 0.0.2
+Summary: Python Dubbo Client.
+Home-page: https://github.com/RitterHou/python-dubbo
+Author: hourui
+Author-email: hourui@qianmi.com
+License: Apache License 2.0
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: Natural Language :: Chinese (Simplified)
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3.7
