@@ -3,6 +3,7 @@ setup.cfg
 setup.py
 dubbo/__init__.py
 dubbo/client.py
+dubbo/nacos.py
 dubbo/codec/__init__.py
 dubbo/codec/decoder.py
 dubbo/codec/encoder.py
