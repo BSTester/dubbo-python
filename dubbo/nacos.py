@@ -19,12 +19,6 @@ class NacosClient(NCObject):
                 if consumers and item.startswith('consumers'):
                     data_list.append(item)
             return data_list
-        params = {
-            "groupName": group_name or '',
-            "namespaceId": namespace_id or '',
-            "pageNo": page_no or 1,
-            "pageSize": page_size or 1000
-        }
         cache_key = group_key(providers and 'providers' or '', consumers and 'consumers' or '', self.namespace)
         # get from failover
         content = read_file_str(self.failover_base, cache_key)
