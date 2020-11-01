@@ -88,14 +88,14 @@ class DubboClient(object):
         if self.__zk_register:  # 优先从zk中获取provider的host
             host = self.__zk_register.get_provider_host(self.__interface)
         elif self.__nc_register:
-            host = self.__nc_register.get_provider_host(self.__interface)
+            host = self.__nc_register.get_provider_host(self.__interface, self.__version)
         else:
             host = self.__host
         # logger.debug('get host {}'.format(host))
 
         request_param = {
             'dubbo_version': self.__dubbo_version,
-            'version': self.__version,
+            'version': self.__version.replace(':',''),
             'path': self.__interface,
             'method': method,
             'arguments': args
@@ -330,26 +330,34 @@ class NacosRegister(object):
             self.lock.acquire()
             try:
                 if interface not in self.hosts:
-                    service = DUBBO_NC_PROVIDERS.format(interface, version)
-                    self._get_providers_from_nacos(service)
+                    self._get_providers_from_nacos(interface, version)
             finally:
                 self.lock.release()
         return self._routing_with_wight(interface)
 
-    def _get_providers_from_nacos(self, interface):
+    def _get_providers_from_nacos(self, interface, version):
         """
         从nacos中根据interface获取到providers信息
         :param interface:
+        :param version:
         :return:
         """
+        service = DUBBO_NC_PROVIDERS.format(interface, version)
         providers = self.nc.get_service_list(timeout=self.timeout, group_name=self.group_name, namespace_id=self.namespace_id)
-        if not providers or interface not in providers:
-            raise RegisterException('no providers for interface {}'.format(interface))
-        self.nc.subscribe([])
-        service = self.nc.subscribed_local_manager.get_local_instances(interface)
-        for k in service:
-            service = service(k).__dict__
-            self.hosts[interface] = service.get('hosts')
+        if not providers or service not in providers:
+            raise RegisterException('no providers for service {}'.format(service))
+        self.nc.subscribe([], service_name=service)
+        services = self.nc.subscribed_local_manager.get_local_instances(service) or {}
+        self.close()
+        for k, v in services.items():
+            service = v.__dict__
+            instance = service.get('instance')
+            if not isinstance(instance, list): instance = [instance]
+            hosts = []
+            for ins in instance:
+                host = '{}:{}'.format(ins.get('ip'), ins.get('port'))
+                hosts.append(host)
+            self.hosts[interface] = hosts
 
     def _routing_with_wight(self, interface):
         """
@@ -359,7 +367,7 @@ class NacosRegister(object):
         """
         hosts = self.hosts.get(interface)
         if not hosts:
-            raise RegisterException('no providers for service {}'.format(interface))
+            raise RegisterException('no host or providers for interface {}'.format(interface))
         return random.choice(hosts)
 
     def close(self):
