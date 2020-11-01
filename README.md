@@ -1,4 +1,4 @@
-# python-dubbo
+# dubbo-python
 
 _Python Dubbo Client._
 基于Apache dubbo-python2 [参考](https://github.com/apache/dubbo-python2)
@@ -6,7 +6,7 @@ _Python Dubbo Client._
 ## Installation
 
     python setup.py install
-    pip install python-dubbo
+    pip install dubbo-python
 
 ## Usage
 
@@ -32,7 +32,7 @@ result = dubbo_cli.call('listByIdString', admin_id)
 
 #### 如何定义参数
 
-python-dubbo支持以下Java类型的参数，表格右边一列代表了在Pyton中与指定Java类型所对应的类型
+dubbo-python支持以下Java类型的参数，表格右边一列代表了在Pyton中与指定Java类型所对应的类型
 
 | 类型 | Java | Python |
 | :--- | :--- | :--- |
