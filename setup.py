@@ -26,7 +26,7 @@ long_description = (here / 'README.md').read_text(encoding='utf-8')
 
 setup(
     name='dubbo-python',
-    version='0.0.1',
+    version='0.0.2',
     url='https://github.com/BSTester/dubbo-python',
     author='贝克街的捉虫师',
     author_email='forpeng@foxmail.com',

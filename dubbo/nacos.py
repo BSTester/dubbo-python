@@ -6,6 +6,15 @@ class NacosClient(NCObject):
     def __init__(self, server_addresses, endpoint=None, namespace=None, ak=None, sk=None, username=None, password=None):
         super(NacosClient, self).__init__(server_addresses=server_addresses, endpoint=endpoint, namespace=namespace, ak=ak, sk=sk, username=username, password=password)
 
+    def get_methods_from_service(self, service, clusters=None, namespace_id=None, group_name=None):
+        instance = self.list_naming_instance(service_name=service, clusters=clusters, namespace_id=namespace_id, group_name=group_name, healthy_only=True)
+        methods = []
+        for host in instance.get('hosts') or []:
+            method_values = host.get('metadata', {}).get('methods', '')
+            for method in method_values.split(','):
+                if method not in methods: methods.append(method)
+        return methods
+
     def get_service_list(self, timeout=None, namespace_id=None, group_name=None, page_no=1, page_size=1000, consumers=False, providers=True):
         logger.info("[get-service-list] namespace:%s, timeout:%s, namespace_id:%s, group_name:%s, page_no:%s, page_size:%s" % (
             self.namespace, timeout, namespace_id, group_name, page_no, page_size))

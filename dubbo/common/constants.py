@@ -52,8 +52,8 @@ DUBBO_ZK_PROVIDERS = '/dubbo/{}/providers'
 DUBBO_ZK_CONSUMERS = '/dubbo/{}/consumers'
 DUBBO_ZK_CONFIGURATORS = '/dubbo/{}/configurators'
 
-DUBBO_NC_PROVIDERS = 'providers:{}'
-DUBBO_NC_CONSUMERS = 'consumers:{}'
+DUBBO_NC_PROVIDERS = 'providers:{}:{}'
+DUBBO_NC_CONSUMERS = 'consumers:{}:{}'
 # 客户端检测与远程主机的连接是否超时的间隔
 TIMEOUT_CHECK_INTERVAL = 0.03  # 30ms
 # 连接最长允许的空闲时间
