@@ -32,6 +32,7 @@ from dubbo.common.constants import DUBBO_ZK_PROVIDERS, DUBBO_ZK_CONFIGURATORS, D
 from dubbo.common.exceptions import RegisterException
 from dubbo.common.util import parse_url, get_pid, get_ip
 from dubbo.connection.connections import connection_pool
+from dubbo.telnet import Telnet
 
 logger = logging.getLogger('dubbo-python')
 
@@ -63,7 +64,7 @@ class DubboClient(object):
         self.__nc_register = nacos_register
         self.__host = host
 
-    def call(self, method, args=(), timeout=None):
+    def call(self, method, args=(), timeout=10):
         """
         执行远程调用
         :param method: 远程调用的方法名
@@ -104,6 +105,50 @@ class DubboClient(object):
         logger.debug('Start request, host={}, params={}'.format(host, request_param))
         start_time = time.time()
         result = connection_pool.get(host, request_param, timeout)
+        cost_time = int((time.time() - start_time) * 1000)
+        logger.debug('Finish request, host={}, params={}'.format(host, request_param))
+        logger.debug('Request invoked, host={}, params={}, result={}, cost={}ms, timeout={}s'.format(
+            host, request_param, result, cost_time, timeout))
+        return result
+
+    def invoke(self, method, args=(), timeout=10):
+        """
+        通过telnet invoke调用
+        :param method: 远程调用的方法名
+        :param args: 方法参数
+                    1. 对于没有参数的方法，此参数不填；
+                    2. 对于只有一个参数的方法，直接填入该参数；
+                    3. 对于有多个参数的方法，传入一个包含了所有参数的列表；
+                    4. 当前方法参数支持以下类型：
+                        * bool
+                        * int
+                        * long
+                        * float
+                        * double
+                        * java.lang.String
+                        * java.lang.Object
+        :param timeout: 请求超时时间（秒），不设置则不会超时
+        :return:
+        """
+        if not isinstance(args, (list, tuple)):
+            args = [args]
+
+        if self.__zk_register:  # 优先从zk中获取provider的host
+            host = self.__zk_register.get_provider_host(self.__interface)
+        elif self.__nc_register:
+            host = self.__nc_register.get_provider_host(self.__interface, self.__version)
+        else:
+            host = self.__host
+        # logger.debug('get host {}'.format(host))
+
+        request_param = ','.join(args)
+
+        logger.debug('Start request, host={}, params={}'.format(host, request_param))
+        start_time = time.time()
+        conn = Telnet(host=host)
+        conn.set_connect_timeout(timeout)
+        conn.set_read_timeout(timeout)
+        result = conn.invoke(self.__interface, method, request_param)
         cost_time = int((time.time() - start_time) * 1000)
         logger.debug('Finish request, host={}, params={}'.format(host, request_param))
         logger.debug('Request invoked, host={}, params={}, result={}, cost={}ms, timeout={}s'.format(
