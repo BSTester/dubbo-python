@@ -28,6 +28,9 @@ dubbo_cli = DubboClient('com.qianmi.pc.api.GoodsQueryProvider', host='127.0.0.1:
 
 admin_id = 'A000000'
 result = dubbo_cli.call('listByIdString', admin_id)
+
+# 通过telnet调用
+result = dubbo_cli.invoke('listByIdString', admin_id)
 ```
 
 #### 如何定义参数
@@ -63,8 +66,6 @@ zk = ZkRegister('172.29.8.100:2181')
 dubbo_cli = DubboClient('cn.wocloud.access.managment.api.IUserApi', version=None, duboo_version='2.8.4', zk_register=zk)
 result = dubbo_cli.call('getUserLists', queryUserVO)
 
-# 通过telnet调用
-result = dubbo_cli.invoke('getUserLists', queryUserVO)
 ```
 
 #### 如何使用枚举(enum)类型作为参数
