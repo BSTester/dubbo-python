@@ -83,14 +83,14 @@ class NacosClient(NCObject):
                     truncate(content), self.namespace))
             try:
                 content = json.dumps(content) if isinstance(content, dict) else content
-                save_file(self.snapshot_base, cache_key, content)
+                save_file(self.failover_base, cache_key, content)
             except Exception as e:
                 logger.exception("[get-service-list] save snapshot failed for %s, namespace:%s" % (
                     str(e), self.namespace))
             return filter_content(content, consumers=consumers, providers=providers)
 
         logger.error("[get-service-list] get config from server failed, try snapshot, namespace:%s" % self.namespace)
-        content = read_file_str(self.snapshot_base, cache_key)
+        content = read_file_str(self.failover_base, cache_key)
         if content is None:
             logger.warning("[get-service-list] snapshot is not exist for %s." % cache_key)
         else:
